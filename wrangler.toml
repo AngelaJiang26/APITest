@@ -1,6 +1,9 @@
 name = "testing"
-main = "src/index.ts"
+main = "src/worker.js"
 compatibility_date = "2023-11-21"
+
+workers_dev = true
+account_id = "012544cd5b8eee151cddddfb3957e644"
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
 # Note: Use secrets to store sensitive data.
