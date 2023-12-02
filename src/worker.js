@@ -128,10 +128,11 @@ async function handleRequest(request) {
         //const kv = await KVNamespace.create(kvNamespace);
         const key = "general_data";
         let value = await CloudFlareTest.get(key);
+        /*
         if (value === null) {
             value = defaultdata;
             //return new Response("Value not found", {status: 404});
-        }
+        }*/
 
         const valueArray = value
             .replace(/\[|\]/g, '') // 
@@ -153,7 +154,11 @@ async function handleRequest(request) {
                 const departmentMap = new Map();
 
                 jsonfile.forEach(person =>{
-                    const{name, department, salary, office, isManager, skill1, skill2, skill3} = person;
+                    const{name, department, salary, office, isManager, skill1, skill2, skill3} = {
+                        ...person,
+                        salary: Number(person.salary),
+                        isManager: Boolean(person.isManager === 'TRUE'),
+                    };
 
                     //add new if department does not exist in the map yet
                     if (!departmentMap.has(department)){
