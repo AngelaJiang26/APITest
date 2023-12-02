@@ -5,11 +5,19 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
-    "start": "wrangler dev"
+    "start": "wrangler dev",
+    "test": "jest"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
     "@cloudflare/workers-types": "^4.20230419.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
     "typescript": "^5.0.4",
     "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.2"
   }
 }

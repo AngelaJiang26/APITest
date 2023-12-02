@@ -1,3 +1,5 @@
+//const { response } = require("express");
+
 addEventListener('fetch', (event) => {
     event.respondWith(handleRequest(event.request));
   });
@@ -135,9 +137,9 @@ async function handleRequest(request) {
         }*/
 
         const valueArray = value
-            .replace(/\[|\]/g, '') // 
-            .replace(/'/g, '')
-            .split('\n')           // 
+            .replace(/\[|\]/g, '') // remove []
+            .replace(/'/g, '')     // remove ''
+            .split('\n')           // split by new line
             .map(row => row.split(', ')); 
 
         const headers = valueArray[0];
@@ -211,15 +213,194 @@ async function handleRequest(request) {
           });
       } 
 
+    
+    // API Endpoint #3 POST /organization-chart
+    if (request.method === 'POST' && request.url.endsWith('/organization-chart')) {
+        const input = await request.text();
+        const valueArray = input
+            .replace(/\[|\]/g, '') // remove []
+            .replace(/'/g, '')     // remove ''
+            .split('\n')           // split by new line
+            .map(row => row.split(', ')); 
+
+        const headers = valueArray[0];
+
+        const jsonData = valueArray.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((header, index) => {
+              obj[header] = row[index];
+            });
+            return obj;
+        });
+
+        function sort_by_department(jsonfile){
+                const departmentMap = new Map();
+
+                jsonfile.forEach(person =>{
+                    const{name, department, salary, office, isManager, skill1, skill2, skill3} = {
+                        ...person,
+                        salary: Number(person.salary),
+                        isManager: Boolean(person.isManager === 'TRUE'),
+                    };
+
+                    //add new if department does not exist in the map yet
+                    if (!departmentMap.has(department)){
+                        departmentMap.set(department, 
+                            {
+                                name: department,
+                                managerName: null,
+                                employees:[],
+                            })
+                    }
+
+                    const currentDepartment = departmentMap.get(department);
+
+                    if(isManager){
+                        currentDepartment.managerName = name;
+                    }
+
+                    currentDepartment.employees.push(
+                        {
+                            name,
+                            department, 
+                            salary,
+                            office,
+                            isManager,
+                            skills:[skill1, skill2, skill3],
+                        })
+                });
+
+                const departments = Array.from(departmentMap.values());
+                return {organization:{departments}};
+
+        }
+
+        const departments = sort_by_department(jsonData);
+
+        const jsonResponse = new Response(JSON.stringify(departments, null, 2), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 200,
+          });
+        
+        //const infoText = JSON.stringify(jsonResponse);
+        return jsonResponse;
+
+    }
+
+    // API Endpoint #4 POST /employee
+    if (request.method === 'POST' && request.url.endsWith('/employee')) {
+        const input = await request.json();
+
+        const key = "general_data";
+        let value = await CloudFlareTest.get(key);
+/*
+        if (value === null) {
+            value = defaultdata;
+            //return new Response("Value not found", {status: 404});
+        }*/
+
+        //process json data
+        const valueArray = value
+            .replace(/\[|\]/g, '') // remove []
+            .replace(/'/g, '')     // remove ''
+            .split('\n')           // split by new line
+            .map(row => row.split(', ')); 
+        
+        const headers = valueArray[0];
+
+        const jsonData = valueArray.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((header, index) => {
+              obj[header] = row[index];
+            });
+            return obj;
+        });
+
+        
+        function filterEmployees(jsonData, criteria) {
+            const filteredEmployees = jsonData.filter(employee => {
+                // Check each criteria if provided and match against the employee attributes
+                return (!criteria.name || new RegExp(criteria.name, 'i').test(employee.name)) &&
+                       (!criteria.department || new RegExp(criteria.department, 'i').test(employee.department)) &&
+                       (!criteria.minSalary || Number(employee.salary) >= criteria.minSalary) &&
+                       (!criteria.maxSalary || Number(employee.salary) <= criteria.maxSalary) &&
+                       (!criteria.office || new RegExp(criteria.office, 'i').test(employee.office)) &&
+                       (!criteria.skill || [employee.skill1, employee.skill2, employee.skill3].some(skill => new RegExp(criteria.skill, 'i').test(skill)));
+              });
+            
+              // Format the response
+              const employeeMap = new Map();
+              filteredEmployees.forEach(person => {
+                const{name, department, salary, office, isManager, skill1, skill2, skill3} = {
+                    ...person,
+                    salary: Number(person.salary),
+                    isManager: Boolean(person.isManager === 'TRUE'),
+                };
+                employeeMap.set(name,
+                    {
+                        name: name,
+                        department: department,
+                        salary: salary,
+                        office: office,
+                        isManager: isManager,
+                        skills:[skill1,skill2,skill3],
+                    })
+              });
+
+                const temp = Array.from(employeeMap.values());
+                const formattedResponse = {
+                    employees:temp
+                };       
+
+              return formattedResponse;
+            
+        }
+
+        const ret = filterEmployees(jsonData, input); 
+
+        const jsonResponse = new Response(JSON.stringify(ret, null, 2), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 200,
+          });
+        return jsonResponse;
+    }
+    
+    if (request.method === 'POST' && new URL(request.url).pathname === '/test'){
+        const input = await request.json();
+        const value = defaultdata;
+        const valueArray = value
+            .replace(/\[|\]/g, '') // remove []
+            .replace(/'/g, '')     // remove ''
+            .split('\n')           // split by new line
+            .map(row => row.split(', ')); 
+        
+        const headers = valueArray[0];
+
+        const jsonData = valueArray.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((header, index) => {
+              obj[header] = row[index];
+            });
+            return obj;
+        });
+
+        const jsonResponse = new Response(JSON.stringify(jsonData, null, 2), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 200,
+          });
+        return jsonResponse;
+
+    }
+
 
 
     else {
       return new Response('Not Found', { status: 404 });
     }
 }
-
+/*
 // API Endpoint #2: GET /me
-/*async function handleRequest(request) {
+async function handleRequest(request) {
     if (request.method === 'GET' && new URL(request.url).pathname === '/me') {
       const infoText = JSON.stringify(myInfo);
       return new Response(infoText);
