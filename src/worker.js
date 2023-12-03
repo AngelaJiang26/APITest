@@ -111,7 +111,9 @@ async function handleRequest(request) {
     // API Endpoint #3 POST /organization-chart
     if (request.method === 'POST' && request.url.endsWith('/organization-chart')) {
         
-        const value = await request.text();
+        const input = await request.json();
+
+        const value = input['organizationData'];
 
         const valueArray = value
             .split('\n')           // split by new line

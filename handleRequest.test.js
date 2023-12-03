@@ -13,18 +13,21 @@ describe('handleRequest', () => {
       skill: 'HTML',
     };*/
 
-    const requestBody = `name,department,salary,office,isManager,skill1,skill2,skill3   
-    John,CDN,80,Lisbon,FALSE,Caching,C++,AI
-    Jill,Developer Platform,100,Austin,FALSE,Typescript,C++,GoLang   
-    Audrey Leblanc,Accounting,154,Singapore,TRUE,HTML,CSS,Postgres 
-    Braden McMahon,Bots,219,San Francisco,TRUE,Distributed Systems Rust,AI
-    Belen Norman,Developer Platform,252,London,TRUE,HTML,Rust,GoLang   
-    Aziel Gibson,CDN,145,New York,TRUE,Caching,C++,AI
-    Eden Roy,Accounting,190,Austin,FALSE,Typescript,C++,GoLang   
-    Marcelo Sullivan,Bots,241,Singapore,FALSE,HTML,CSS,Postgres 
-    Melanie Esparza,Developer Platform,231,San Francisco FALSE,Distributed Systems Rust,AI`
+    const requestBody = {
+      "organizationData":`name,department,salary,office,isManager,skill1,skill2,skill3   
+      John,CDN,80,Lisbon,FALSE,Caching,C++,AI
+      Jill,Developer Platform,100,Austin,FALSE,Typescript,C++,GoLang   
+      Audrey Leblanc,Accounting,154,Singapore,TRUE,HTML,CSS,Postgres 
+      Braden McMahon,Bots,219,San Francisco,TRUE,Distributed Systems Rust,AI
+      Belen Norman,Developer Platform,252,London,TRUE,HTML,Rust,GoLang   
+      Aziel Gibson,CDN,145,New York,TRUE,Caching,C++,AI
+      Eden Roy,Accounting,190,Austin,FALSE,Typescript,C++,GoLang   
+      Marcelo Sullivan,Bots,241,Singapore,FALSE,HTML,CSS,Postgres 
+      Melanie Esparza,Developer Platform,231,San Francisco FALSE,Distributed Systems Rust,AI`
 
-    const response = await axios.post('http://localhost:51718/organization-chart', requestBody);
+    }
+
+    const response = await axios.post('http://localhost:57562/organization-chart', requestBody);
     /*const request = {
       method: 'POST',
       url: '/test',
