@@ -13,18 +13,18 @@ describe('handleRequest', () => {
       skill: 'HTML',
     };*/
 
-    const requestBody = `
-    'Violeta Cortes', 'Developer Platform', '98', 'Austin', 'FALSE', 'Caching', 'C++', 'AI'
-    'Banks Fitzpatrick', 'CDN', '250', 'Singapore', 'FALSE', 'Typescript', 'Rust', 'GoLang'
-    'Annabella Velasquez', 'Accounting', '172', 'San Francisco', 'FALSE', 'HTML', 'Performance', 'Postgres'
-    'Sullivan Nunez', 'Bots', '165', 'London', 'FALSE', 'Distributed Systems', 'C++', 'AI'
-    'Mya Hardy', 'Developer Platform', '127', 'New York', 'FALSE', 'Distributed Systems', 'Rust', 'GoLang'
-    'Jayceon Murillo', 'CDN', '128', 'Austin', 'FALSE', 'HTML', 'Performance', 'AI'
-    'Mikaela Hampton', 'Accounting', '89', 'Austin', 'FALSE', 'Caching', 'C++', 'GoLang'
-    'Hank Sandoval', 'Bots', '165', 'Singapore', 'FALSE', 'Typescript', 'Rust', 'Postgres'
-    `
+    const requestBody = `name,department,salary,office,isManager,skill1,skill2,skill3   
+    John,CDN,80,Lisbon,FALSE,Caching,C++,AI
+    Jill,Developer Platform,100,Austin,FALSE,Typescript,C++,GoLang   
+    Audrey Leblanc,Accounting,154,Singapore,TRUE,HTML,CSS,Postgres 
+    Braden McMahon,Bots,219,San Francisco,TRUE,Distributed Systems Rust,AI
+    Belen Norman,Developer Platform,252,London,TRUE,HTML,Rust,GoLang   
+    Aziel Gibson,CDN,145,New York,TRUE,Caching,C++,AI
+    Eden Roy,Accounting,190,Austin,FALSE,Typescript,C++,GoLang   
+    Marcelo Sullivan,Bots,241,Singapore,FALSE,HTML,CSS,Postgres 
+    Melanie Esparza,Developer Platform,231,San Francisco FALSE,Distributed Systems Rust,AI`
 
-    const response = await axios.post('http://localhost:52397/organization-chart', requestBody);
+    const response = await axios.post('http://localhost:51718/organization-chart', requestBody);
     /*const request = {
       method: 'POST',
       url: '/test',
